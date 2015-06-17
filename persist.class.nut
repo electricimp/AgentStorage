@@ -2,7 +2,7 @@
 // This file is licensed under the MIT License
 // http://opensource.org/licenses/MIT
 
-class Persist {
+class AgentStorage {
     static version = [1,0,0];
 
     _cache = null;  // A local cache of the data
@@ -37,8 +37,7 @@ class Persist {
         if (key in _cache) { return _cache[key]; }
 
         // Otherwise write the value and return the written value
-        write(key, value);
-        return value;
+        return write(key, value);
     }
 
     // Inserts or updates data in the cache
@@ -50,6 +49,7 @@ class Persist {
     function write(key, value) {
         _cache[key] <- value;
         server.save(_cache);
+        return value;
     }
 
     // Returns whether or not a key exists in the cache
@@ -62,7 +62,7 @@ class Persist {
         return key in _cache;
     }
 
-    // Removes a field from the server save table.
+    // Removes a field from the cache.
     // Parameters:
     //      key:    The key of the data we're removing.
     //
