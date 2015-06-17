@@ -8,7 +8,7 @@ class Persist {
     _cache = null;  // A local cache of the data
 
     // Class ctor - creates object and loads data
-    constructor() {
+    constructor(b = null) {
         _cache = server.load();
     }
 
@@ -17,27 +17,9 @@ class Persist {
     //      key:    The key of the data we're requesting
     //
     // Returns:     The value (if the key exists)
-    //              null (if the key doesn't exist)
+    //              null (if the key doesn'y exist)
     function read(key) {
-        return (key in _cache) ? _cache[key] : null;
-    }
-
-    // Inserts or updates data in the cache
-    // Parameters:
-    //      key:    The key of the data we're writing
-    //      value:  The data we're writing
-    //
-    // Returns:     The data we wrote
-    function write(key, value) {
-        if (!(key in _cache)) {
-            _cache[key] <- value;
-            server.save(_cache);
-        } else if (_cache[key] != value) {
-            _cache[key] = value;
-            server.save(_cache);
-        }
-
-        return value;
+        return key in _cache ? _cache[key] : null;
     }
 
     // Initializes a field in the cache. If the key does not
@@ -50,12 +32,24 @@ class Persist {
     // Returns:     The data at the specified key (the default value
     //              if the key was created, or the existing data in the
     //              cache if the key was already initialized).
-    function init(key, value){
-        if(!(key in _cache)){
-            _cache[key] <- value;
-            server.save(_cache);
-        }
-        return _cache[key];
+    function setDefault(key, value){
+        // If it exists, return the existing value
+        if (key in _cache) { return _cache[key]; }
+
+        // Otherwise write the value and return the written value
+        write(key, value);
+        return value;
+    }
+
+    // Inserts or updates data in the cache
+    // Parameters:
+    //      key:    The key of the data we're writing
+    //      value:  The data we're writing
+    //
+    // Returns:     nothing
+    function write(key, value) {
+        _cache[key] <- value;
+        server.save(_cache);
     }
 
     // Returns whether or not a key exists in the cache
@@ -68,27 +62,30 @@ class Persist {
         return key in _cache;
     }
 
-    // Removes a field from the cache.
+    // Removes a field from the server save table.
     // Parameters:
     //      key:    The key of the data we're removing.
     //
-    // Returns:     True if the data existed and we removed it
-    //              False if the data did not exist
+    // Returns:     nothing
     function remove(key) {
         if (key in _cache) {
             delete _cache[key];
             server.save(_cache);
-            return true;
         }
-        return false;
     }
 
-    // Clears the server.save table.
-    // Returns:     An empty table
+    // Resets the server.save table
+    //
+    // Returns:     nothing.
     function clear() {
-        local data = {};
-        server.save(data);
-        _cache = data;
-        return data;
+        _cache = {};
+        server.save(_cache);
+    }
+
+    // Returns the number of top level elements in the server.save table
+    //
+    // Returns:     Number of top level elements in server.save table.
+    function len() {
+        return _cache.len();
     }
 }
