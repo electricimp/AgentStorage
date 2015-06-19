@@ -8,7 +8,7 @@ class AgentStorage {
     _cache = null;  // A local cache of the data
 
     // Class ctor - creates object and loads data
-    constructor(b = null) {
+    constructor() {
         _cache = server.load();
     }
 
