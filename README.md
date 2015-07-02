@@ -13,7 +13,7 @@ db <- AgentStorage();
 ```
 
 ## read(key)
-The read method attempts to read a value from the `server.save` table. If the key exists, it's value will be returned, otherwise the read method returns 'null'.
+The read method attempts to read a value from the `server.save` table. If the key exists, it's value will be returned, otherwise the read method returns `null`.
 
 ```squirrel
 local apiKey = db.read("apiKey");
@@ -60,7 +60,7 @@ if(!(db.exists("username")) {
 ```
 
 ## remove(key)
-Removes a field from the `server.save` table.
+Removes a field from the `server.save` table, and returns the removed value. If the key was not found, *remove* returns `null`.
 
 ```squirrel
 // Write a value

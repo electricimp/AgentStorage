@@ -66,12 +66,15 @@ class AgentStorage {
     // Parameters:
     //      key:    The key of the data we're removing.
     //
-    // Returns:     nothing
+    // Returns:     The deleted data (if it exists), null otherwise
     function remove(key) {
+        local val = null;
         if (key in _cache) {
+            val = _cache[key];
             delete _cache[key];
             server.save(_cache);
         }
+        return val;
     }
 
     // Resets the server.save table
